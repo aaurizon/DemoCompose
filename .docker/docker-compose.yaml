@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./dockerfile/nginx.dockerfile
+    volumes:
+      - ./public/:/var/www/html/
+      - ./temp/:/var/log/nginx/
+    ports:
+      - 80:80
+    networks:
+      - internal
+    depends_on:
+      - php1
+      - php2
+  php82:
+    build:
+      context: .
+      dockerfile: ./dockerfile/php82.dockerfile
+    volumes:
+      - ./public/:/var/www/html/
+    networks:
+      - internal
+  php81:
+    build:
+      context: .
+      dockerfile: ./dockerfile/php81.dockerfile
+    volumes:
+      - ./public/:/var/www/html/
+#      - ./siteweb/logs/php.log:/var/log/fpm-php.www.log
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
