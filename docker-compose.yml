@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  nginx:
+    #container_name: front
+    build:
+      context: .
+      dockerfile: ./dockerfile/nginx.dockerfile
+    volumes:
+      - ./temp/:/var/log/nginx/
+    ports:
+      - 80:80
+    networks:
+      - internal
+    depends_on:
+      - php82
+      - php81
+    #deploy:
+    #  mode: replicated
+    #  replicas: 2
+    #  endpoint_mode: vip
+    restart: unless-stopped
+  php82:
+    container_name: back1
+    build:
+      context: .
+      dockerfile: ./dockerfile/php82.dockerfile
+    volumes:
+      - .:/srv/http/
+    networks:
+      - internal
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+  php81:
+    container_name: back2
+    build:
+      context: .
+      dockerfile: ./dockerfile/php81.dockerfile
+    volumes:
+      - .:/srv/http/
+      - ./public/:/var/www/html/
+     #- ./siteweb/logs/php.log:/var/log/fpm-php.www.log
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
+configs:
+  my_config:
+    file: ./my_config.txt
+  my_other_config:
+    external: true
