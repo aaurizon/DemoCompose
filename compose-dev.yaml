@@ -12,8 +12,8 @@ services:
     networks:
       - internal
     depends_on:
-      - php1
-      - php2
+      - php82
+      - php81
   php82:
     build:
       context: .
